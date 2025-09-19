@@ -418,7 +418,7 @@ CHANNEL_LAYERS = {
         # For production, use Redis:
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [REDIS_URL],
         },
     },
 }
