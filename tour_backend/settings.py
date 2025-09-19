@@ -332,6 +332,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'tour_backend.urls'
@@ -502,5 +503,5 @@ AUTH_USER_MODEL = 'accounts.User'
 # STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_publishable_key'
 # STRIPE_SECRET_KEY = 'sk_test_your_stripe_secret_key'
 # STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret'
-
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
