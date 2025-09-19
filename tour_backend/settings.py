@@ -364,17 +364,17 @@ DATABASES = {
 }
 POSTGRES_LOCALY = True
 
-# if ENVIRONMENT == 'production' or POSTGRES_LOCALY == True:
-#     # DATABASE_URL
-#     database_url = os.environ.get('DATABASE_URL')
-#     print("Using Postgres Database")
+if ENVIRONMENT == 'production' or POSTGRES_LOCALY == True:
+    # DATABASE_URL
+    database_url = os.environ.get('DATABASE_URL')
+    print("Using Postgres Database")
     
-#     if database_url:
-#         DATABASES['default'] = dj_database_url.parse(database_url)
-#     else:
-#         print("ERROR: DATABASE_URL not found in environment variables!")
-#         # Fallback to SQLite if DATABASE_URL is not set
-#         print("Falling back to SQLite database")
+    if database_url:
+        DATABASES['default'] = dj_database_url.parse(database_url)
+    else:
+        print("ERROR: DATABASE_URL not found in environment variables!")
+        # Fallback to SQLite if DATABASE_URL is not set
+        print("Falling back to SQLite database")
 
 
  
