@@ -280,6 +280,8 @@ import cloudinary
 from environ import Env
 import dotenv
 import dj_database_url
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -305,6 +307,8 @@ CLOUDINARY_STORAGE = {
 
 cloudinary.config(**CLOUDINARY_STORAGE, secure=True)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+print("CLOUDINARY CONFIG:", CLOUDINARY_STORAGE)
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -320,7 +324,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
-    
+
+    'cloudinary_storage', 
+    'cloudinary',
     # Local apps
     'accounts',
     'tours',
@@ -329,8 +335,7 @@ INSTALLED_APPS = [
 
     'channels',
     'chat',
-    'cloudinary_storage', 
-    'cloudinary',
+ 
 ]
 
 MIDDLEWARE = [
@@ -407,12 +412,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        # 'BACKEND': 'channels.layers.InMemoryChannelLayer',
         # For production, use Redis:
-        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        # 'CONFIG': {
-        #     'hosts': [('127.0.0.1', 6379)],
-        # },
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
     },
 }
 # Internationalization
@@ -513,5 +518,5 @@ AUTH_USER_MODEL = 'accounts.User'
 # STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_publishable_key'
 # STRIPE_SECRET_KEY = 'sk_test_your_stripe_secret_key'
 # STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret'
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
