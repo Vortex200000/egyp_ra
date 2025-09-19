@@ -53,5 +53,5 @@ websockets==15.0.1
 wheel==0.45.1
 whitenoise==6.11.0
 zope.interface==8.0
-"cloudinary" 
-"django-cloudinary-storage" 
+cloudinary==1.44.1 
+django-cloudinary-storage==0.3.0 
