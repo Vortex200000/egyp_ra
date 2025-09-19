@@ -276,6 +276,7 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+import cloudinary
 from environ import Env
 import dotenv
 import dj_database_url
@@ -296,7 +297,14 @@ else:
     DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'NONE'),
+}
 
+cloudinary.config(**CLOUDINARY_STORAGE, secure=True)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -321,6 +329,8 @@ INSTALLED_APPS = [
 
     'channels',
     'chat',
+    'cloudinary_storage', 
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
