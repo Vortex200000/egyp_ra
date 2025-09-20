@@ -123,7 +123,7 @@ Please reply directly to {email} to respond to the customer.
             subject=email_subject,
             body=plain_content,
             from_email=f"EGYPET_RA TOURS Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
-            to=['omaressam744@gmail.com'],  # Your support email
+            to=['mimmosafari56@gmail.com'],  # Your support email
             reply_to=[email],  # Set customer email as reply-to
             headers={
                 'X-Mailer': 'EGYPET_RA TOURS Contact System',
