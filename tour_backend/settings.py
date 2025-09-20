@@ -335,6 +335,7 @@ INSTALLED_APPS = [
 
     'channels',
     'chat',
+    'contact'
  
 ]
 
@@ -492,7 +493,7 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
- "https://egyptra-front.vercel.app/"
+ "https://egyptra-front.vercel.app"
 ]
 
 CORS_ALLOW_CREDENTIALS = True

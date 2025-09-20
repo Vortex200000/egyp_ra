@@ -27,6 +27,8 @@ urlpatterns = [
     path('api/tours/', include('tours.urls')),
     path('api/bookings/', include('bookings.urls')),
     path('api/chat/', include('chat.urls')),
+    path('api/contact/', include('contact.urls')),
+
     # path('api/payments/', include('payments.urls')),
 ]
 
