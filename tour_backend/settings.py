@@ -298,7 +298,7 @@ if ENVIRONMENT == 'development':
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['https://egypra-production.up.railway.app/']
+ALLOWED_HOSTS = ['egypra-production.up.railway.app']
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
