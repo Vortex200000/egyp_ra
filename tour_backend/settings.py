@@ -285,7 +285,7 @@ import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+#nata
 dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -505,11 +505,22 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+CSRF_TRUSTED_ORIGINS = [
+    "https://egypra-production.up.railway.app",
+    "https://egyptra-front.vercel.app", 
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
- "https://egyptra-front.vercel.app"
+ "https://egyptra-front.vercel.app" , 
+
+    "https://egypra-production.up.railway.app",
+
+
+    "http://127.0.0.1:8080",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -526,7 +537,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # For development
 
 
 EMAIL_HOST = os.environ.get('EMAIL_HOSTER')
-EMAIL_PORT = 465
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_US')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASS')
