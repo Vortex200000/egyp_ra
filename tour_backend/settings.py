@@ -298,7 +298,7 @@ if ENVIRONMENT == 'development':
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['egypra-production.up.railway.app']
+ALLOWED_HOSTS = ['egypra-production.up.railway.app' , '127.0.0.1' , 'localhost']
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
@@ -538,7 +538,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # For development
 
 EMAIL_HOST = os.environ.get('EMAIL_HOSTER')
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_US')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASS')
 
