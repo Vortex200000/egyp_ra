@@ -4,7 +4,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
 import uuid
-
+from parler.models import TranslatableModel, TranslatedFields
 from tour_backend import settings
 
 class TourCategory(models.Model):

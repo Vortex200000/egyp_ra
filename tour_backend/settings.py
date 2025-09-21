@@ -298,7 +298,7 @@ if ENVIRONMENT == 'development':
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://egypra-production.up.railway.app/']
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
@@ -324,6 +324,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
+    'parler',
 
     'cloudinary_storage', 
     'cloudinary',
@@ -336,8 +337,24 @@ INSTALLED_APPS = [
     'channels',
     'chat',
     'contact'
- 
+
 ]
+
+LANGUAGES = (
+    ('en', 'English'),
+    ('it', 'Italian'),
+)
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en'},
+        {'code': 'it'},
+    ),
+    'default': {
+        'fallback': 'en',   # fallback if no translation exists
+        'hide_untranslated': False,
+    }
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
