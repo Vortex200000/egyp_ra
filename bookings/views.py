@@ -79,7 +79,7 @@ class CreateBookingView(generics.CreateAPIView):
             </head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
                 <div style="background: {status_color}; color: white; padding: 20px; text-align: center;">
-                    <h2 style="margin: 0;">EGYPET_RA TOURS</h2>
+                    <h2 style="margin: 0;"> NATA STORIA TRAVEL</h2>
                     <p style="margin: 5px 0 0 0;">Booking Notification</p>
                 </div>
                 
@@ -134,7 +134,7 @@ class CreateBookingView(generics.CreateAPIView):
                     {f'<div style="background: #f8f9ff; padding: 15px; border-radius: 5px; margin: 15px 0;"><strong>Special Requests:</strong> {booking.special_requests}</div>' if booking.special_requests else ''}
                     
                     <p style="margin-top: 20px; font-size: 14px; color: #666;">
-                        Generated automatically by EGYPET_RA TOURS booking system on {timezone.now().strftime('%Y-%m-%d at %H:%M')}
+                        Generated automatically by  NATA STORIA TRAVEL booking system on {timezone.now().strftime('%Y-%m-%d at %H:%M')}
                     </p>
                 </div>
             </body>
@@ -162,7 +162,7 @@ class CreateBookingView(generics.CreateAPIView):
     {f'Special Requests: {booking.special_requests}' if booking.special_requests else ''}
 
     Generated on {timezone.now().strftime('%Y-%m-%d at %H:%M')}
-    EGYPET_RA TOURS Booking System
+     NATA STORIA TRAVEL Booking System
             """
 
             # Create and send email
@@ -172,7 +172,7 @@ class CreateBookingView(generics.CreateAPIView):
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[owner_email],
                 headers={
-                    'X-Mailer': 'EGYPET_RA TOURS Booking System',
+                    'X-Mailer': ' NATA STORIA TRAVEL Booking System',
                     'X-Priority': '3' if action_type == 'new_booking' else '2',  # Higher priority for new bookings
                 }
             )
@@ -381,7 +381,7 @@ class CreateBookingView(generics.CreateAPIView):
             </head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ EGYPET_RA TOURS</h1>
+                    <h1 style="color: white; margin: 0; font-size: 28px;">🏛️  NATA STORIA TRAVEL</h1>
                     <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 16px;">Your Adventure Awaits!</p>
                 </div>
                 
@@ -390,7 +390,7 @@ class CreateBookingView(generics.CreateAPIView):
                     
                     <p style="font-size: 16px;">Dear <strong>{booking.full_name}</strong>,</p>
                     
-                    <p style="font-size: 16px;">Thank you for choosing EGYPET_RA TOURS! Your booking has been confirmed and we're excited to show you the wonders of Egypt.</p>
+                    <p style="font-size: 16px;">Thank you for choosing  NATA STORIA TRAVEL! Your booking has been confirmed and we're excited to show you the wonders of Egypt.</p>
                     
                     <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 25px 0;">
                         <h3 style="color: #667eea; margin-top: 0;">📋 Booking Details</h3>
@@ -440,7 +440,7 @@ class CreateBookingView(generics.CreateAPIView):
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; border: 1px solid #ddd; border-top: none;">
                     <p style="margin: 0; color: #6c757d; font-size: 14px;">
                         Best regards,<br>
-                        <strong style="color: #667eea;">EGYPET_RA TOURS Team</strong>
+                        <strong style="color: #667eea;"> NATA STORIA TRAVEL Team</strong>
                     </p>
                     <p style="margin: 15px 0 0 0; color: #6c757d; font-size: 12px;">
                         This email was sent regarding your booking. Please keep this email for your records.
@@ -454,7 +454,7 @@ class CreateBookingView(generics.CreateAPIView):
             plain_content = f"""
 Dear {booking.full_name},
 
-Thank you for choosing EGYPET_RA TOURS! Your booking has been confirmed.
+Thank you for choosing  NATA STORIA TRAVEL! Your booking has been confirmed.
 
 BOOKING DETAILS:
 ================
@@ -474,7 +474,7 @@ Email: support@egypt-tours.com
 Phone: +20 123 456 7890
 
 Best regards,
-EGYPET_RA TOURS Team
+ NATA STORIA TRAVEL Team
 
 ---
 This email was sent regarding your booking. Please keep this email for your records.
@@ -484,11 +484,11 @@ This email was sent regarding your booking. Please keep this email for your reco
             email = EmailMultiAlternatives(
                 subject=subject,
                 body=plain_content,
-                from_email=f"EGYPET_RA TOURS <{settings.DEFAULT_FROM_EMAIL}>",
+                from_email=f" NATA STORIA TRAVEL <{settings.DEFAULT_FROM_EMAIL}>",
                 to=[booking.email],
                 headers={
                     'Reply-To': settings.DEFAULT_FROM_EMAIL,
-                    'X-Mailer': 'EGYPET_RA TOURS Booking System',
+                    'X-Mailer': ' NATA STORIA TRAVEL Booking System',
                     'X-Priority': '3',
                     'Importance': 'Normal'
                 }
@@ -663,7 +663,7 @@ class CancelBookingView(generics.GenericAPIView):
             </head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ EGYPET_RA TOURS</h1>
+                    <h1 style="color: white; margin: 0; font-size: 28px;">🏛️  NATA STORIA TRAVEL</h1>
                     <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 16px;">Booking Cancellation</p>
                 </div>
                 
@@ -710,7 +710,7 @@ class CancelBookingView(generics.GenericAPIView):
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; border: 1px solid #ddd; border-top: none;">
                     <p style="margin: 0; color: #6c757d; font-size: 14px;">
                         Best regards,<br>
-                        <strong style="color: #ff6b6b;">EGYPET_RA TOURS Team</strong>
+                        <strong style="color: #ff6b6b;"> NATA STORIA TRAVEL Team</strong>
                     </p>
                 </div>
             </body>
@@ -738,18 +738,18 @@ Email: support@egypt-tours.com
 Phone: +20 123 456 7890
 
 Best regards,
-EGYPET_RA TOURS Team
+ NATA STORIA TRAVEL Team
             """
             
             # Create and send email
             email = EmailMultiAlternatives(
                 subject=subject,
                 body=plain_content,
-                from_email=f"EGYPET_RA TOURS <{settings.DEFAULT_FROM_EMAIL}>",
+                from_email=f" NATA STORIA TRAVEL <{settings.DEFAULT_FROM_EMAIL}>",
                 to=[booking.email],
                 headers={
                     'Reply-To': settings.DEFAULT_FROM_EMAIL,
-                    'X-Mailer': 'EGYPET_RA TOURS Booking System',
+                    'X-Mailer': ' NATA STORIA TRAVEL Booking System',
                 }
             )
             
@@ -894,7 +894,7 @@ def booking_voucher(request, booking_reference):
 
     # Header
     p.setFont("Helvetica-Bold", 20)
-    p.drawString(50, height - 50, "🏛️ EGYPET_RA TOURS")
+    p.drawString(50, height - 50, "🏛️  NATA STORIA TRAVEL")
     
     p.setFont("Helvetica-Bold", 18)
     p.drawString(50, height - 80, "Tour Booking Voucher")
@@ -953,7 +953,7 @@ def booking_voucher(request, booking_reference):
 
     # Footer
     p.setFont("Helvetica", 10)
-    p.drawString(50, 50, f"Generated on {timezone.now().strftime('%Y-%m-%d %H:%M')} • EGYPET_RA TOURS Booking System")
+    p.drawString(50, 50, f"Generated on {timezone.now().strftime('%Y-%m-%d %H:%M')} •  NATA STORIA TRAVEL Booking System")
 
     p.showPage()
     p.save()
@@ -1149,7 +1149,7 @@ def send_admin_confirmation_email(booking):
         
         <p>We will contact you soon with more details about your tour.</p>
         
-        <p>Best regards,<br>EGYPET_RA TOURS Team</p>
+        <p>Best regards,<br> NATA STORIA TRAVEL Team</p>
     </div>
     """
     
@@ -1185,7 +1185,7 @@ def send_admin_decline_email(booking, reason):
         
         <p>If you have any questions, please contact us.</p>
         
-        <p>Best regards,<br>EGYPET_RA TOURS Team</p>
+        <p>Best regards,<br> NATA STORIA TRAVEL Team</p>
     </div>
     """
     
@@ -1222,7 +1222,7 @@ def admin_booking_voucher(request, booking_reference):
 
     # Header
     p.setFont("Helvetica-Bold", 20)
-    p.drawString(50, height - 50, "EGYPET_RA TOURS - ADMIN VOUCHER")
+    p.drawString(50, height - 50, " NATA STORIA TRAVEL - ADMIN VOUCHER")
     
     p.setFont("Helvetica-Bold", 18)
     p.drawString(50, height - 80, f"Booking: {booking.booking_reference}")
