@@ -806,3 +806,297 @@ def booking_voucher(request, booking_reference):
     
     logger.info(f"Voucher generated for booking {booking.booking_reference}")
     return response
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def admin_all_bookings(request):
+    """
+    Admin endpoint to get all bookings with filtering options
+    """
+    # Check if user is admin
+    if not request.user.is_staff:
+        return Response({
+            'error': 'Admin access required'
+        }, status=status.HTTP_403_FORBIDDEN)
+    
+    # Get filter parameters
+    status_filter = request.GET.get('status', 'all')  # all, pending, confirmed, cancelled
+    
+    # Base queryset
+    bookings = Booking.objects.select_related('tour', 'user').order_by('-created_at')
+    
+    # Apply status filter
+    if status_filter != 'all':
+        bookings = bookings.filter(booking_status=status_filter)
+    
+    # Serialize bookings with extra admin info
+    booking_data = []
+    for booking in bookings:
+        booking_info = {
+            'id': booking.id,
+            'booking_reference': booking.booking_reference,
+            'customer_name': booking.full_name,
+            'customer_email': booking.email,
+            'tour_title': booking.tour.title,
+            'tour_location': booking.tour.location,
+            'preferred_date': booking.preferred_date,
+            'preferred_time': booking.preferred_time,
+            'number_of_travelers': booking.number_of_travelers,
+            'total_amount': booking.total_amount,
+            'booking_status': booking.booking_status,
+            'payment_status': booking.payment_status,
+            'created_at': booking.created_at,
+            'can_confirm': booking.booking_status == 'pending',
+            'can_decline': booking.booking_status in ['pending', 'confirmed'],
+            'special_requests': booking.special_requests,
+            'user_id': booking.user.id if booking.user else None,
+            'username': booking.user.username if booking.user else 'Guest',
+        }
+        booking_data.append(booking_info)
+    
+    return Response({
+        'success': True,
+        'bookings': booking_data,
+        'total_count': len(booking_data)
+    })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def admin_confirm_booking(request, booking_reference):
+    """
+    Admin endpoint to confirm a booking
+    """
+    # Check if user is admin
+    if not request.user.is_staff:
+        return Response({
+            'error': 'Admin access required'
+        }, status=status.HTTP_403_FORBIDDEN)
+    
+    booking = get_object_or_404(Booking, booking_reference=booking_reference)
+    
+    # Check if booking can be confirmed
+    if booking.booking_status != 'pending':
+        return Response({
+            'error': f'Cannot confirm booking. Current status: {booking.booking_status}'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Update booking status
+    booking.booking_status = 'confirmed'
+    booking.confirmation_date = timezone.now()
+    booking.save()
+    
+    # Create status history
+    BookingStatusHistory.objects.create(
+        booking=booking,
+        old_status='pending',
+        new_status='confirmed',
+        changed_by=request.user,
+        reason='Confirmed by admin'
+    )
+    
+    # Send confirmation email
+    email_sent = False
+    try:
+        email_sent = send_admin_confirmation_email(booking)
+    except Exception as e:
+        logger.error(f"Failed to send admin confirmation email: {e}")
+    
+    return Response({
+        'success': True,
+        'message': f'Booking {booking_reference} confirmed successfully',
+        'booking_status': booking.booking_status,
+        'email_sent': email_sent
+    })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def admin_decline_booking(request, booking_reference):
+    """
+    Admin endpoint to decline/cancel a booking
+    """
+    # Check if user is admin
+    if not request.user.is_staff:
+        return Response({
+            'error': 'Admin access required'
+        }, status=status.HTTP_403_FORBIDDEN)
+    
+    booking = get_object_or_404(Booking, booking_reference=booking_reference)
+    
+    # Check if booking can be declined
+    if booking.booking_status in ['cancelled', 'completed']:
+        return Response({
+            'error': f'Cannot decline booking. Current status: {booking.booking_status}'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Get decline reason from request
+    decline_reason = request.data.get('reason', 'Declined by admin')
+    
+    # Update booking status
+    old_status = booking.booking_status
+    booking.booking_status = 'cancelled'
+    booking.cancellation_date = timezone.now()
+    booking.save()
+    
+    # Create status history
+    BookingStatusHistory.objects.create(
+        booking=booking,
+        old_status=old_status,
+        new_status='cancelled',
+        changed_by=request.user,
+        reason=f'Declined by admin: {decline_reason}'
+    )
+    
+    # Create cancellation record if it doesn't exist
+    if not hasattr(booking, 'cancellation'):
+        BookingCancellation.objects.create(
+            booking=booking,
+            reason='other',
+            reason_details=decline_reason,
+            cancelled_by=request.user,
+            refund_amount=booking.total_amount
+        )
+    
+    # Send decline email
+    email_sent = False
+    try:
+        email_sent = send_admin_decline_email(booking, decline_reason)
+    except Exception as e:
+        logger.error(f"Failed to send admin decline email: {e}")
+    
+    return Response({
+        'success': True,
+        'message': f'Booking {booking_reference} declined successfully',
+        'booking_status': booking.booking_status,
+        'email_sent': email_sent
+    })
+
+def send_admin_confirmation_email(booking):
+    """Send booking confirmation email when admin confirms"""
+    subject = f'Booking Confirmed - {booking.booking_reference}'
+    
+    html_content = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #28a745;">Your Booking is Confirmed!</h2>
+        
+        <p>Dear {booking.full_name},</p>
+        
+        <p>Great news! Your booking has been confirmed by our team.</p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3>Booking Details:</h3>
+            <p><strong>Reference:</strong> {booking.booking_reference}</p>
+            <p><strong>Tour:</strong> {booking.tour.title}</p>
+            <p><strong>Date:</strong> {booking.preferred_date}</p>
+            <p><strong>Time:</strong> {booking.preferred_time or 'To be confirmed'}</p>
+            <p><strong>Travelers:</strong> {booking.number_of_travelers}</p>
+            <p><strong>Total:</strong> ${booking.total_amount}</p>
+        </div>
+        
+        <p>We will contact you soon with more details about your tour.</p>
+        
+        <p>Best regards,<br>EGYPET_RA TOURS Team</p>
+    </div>
+    """
+    
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=f"Dear {booking.full_name}, your booking {booking.booking_reference} has been confirmed!",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[booking.email]
+    )
+    email.attach_alternative(html_content, "text/html")
+    
+    return email.send(fail_silently=False)
+
+def send_admin_decline_email(booking, reason):
+    """Send booking decline email when admin declines"""
+    subject = f'Booking Update - {booking.booking_reference}'
+    
+    html_content = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #dc3545;">Booking Update</h2>
+        
+        <p>Dear {booking.full_name},</p>
+        
+        <p>We regret to inform you that your booking has been cancelled.</p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3>Booking Details:</h3>
+            <p><strong>Reference:</strong> {booking.booking_reference}</p>
+            <p><strong>Tour:</strong> {booking.tour.title}</p>
+            <p><strong>Date:</strong> {booking.preferred_date}</p>
+            <p><strong>Reason:</strong> {reason}</p>
+        </div>
+        
+        <p>If you have any questions, please contact us.</p>
+        
+        <p>Best regards,<br>EGYPET_RA TOURS Team</p>
+    </div>
+    """
+    
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=f"Dear {booking.full_name}, your booking {booking.booking_reference} has been cancelled.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[booking.email]
+    )
+    email.attach_alternative(html_content, "text/html")
+    
+    return email.send(fail_silently=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def admin_booking_voucher(request, booking_reference):
+    """
+    Admin endpoint to download voucher for any booking
+    """
+    # Check if user is admin
+    if not request.user.is_staff:
+        return Response({
+            'error': 'Admin access required'
+        }, status=status.HTTP_403_FORBIDDEN)
+    
+    booking = get_object_or_404(Booking, booking_reference=booking_reference)
+    
+    # Use the existing voucher generation code but for admin
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="admin-voucher-{booking.booking_reference}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    # Header
+    p.setFont("Helvetica-Bold", 20)
+    p.drawString(50, height - 50, "EGYPET_RA TOURS - ADMIN VOUCHER")
+    
+    p.setFont("Helvetica-Bold", 18)
+    p.drawString(50, height - 80, f"Booking: {booking.booking_reference}")
+
+    # Booking details
+    p.setFont("Helvetica", 14)
+    y_pos = height - 120
+    
+    details = [
+        f"Customer: {booking.full_name}",
+        f"Email: {booking.email}",
+        f"Phone: {booking.phone}",
+        f"Tour: {booking.tour.title}",
+        f"Date: {booking.preferred_date}",
+        f"Time: {booking.preferred_time or 'TBD'}",
+        f"Travelers: {booking.number_of_travelers}",
+        f"Status: {booking.booking_status.upper()}",
+        f"Total: ${booking.total_amount}",
+    ]
+    
+    for detail in details:
+        p.drawString(50, y_pos, detail)
+        y_pos -= 25
+
+    # Admin info
+    p.setFont("Helvetica", 10)
+    p.drawString(50, 50, f"Generated by admin: {request.user.username} on {timezone.now().strftime('%Y-%m-%d %H:%M')}")
+
+    p.showPage()
+    p.save()
+    
+    return response

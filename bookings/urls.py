@@ -22,4 +22,9 @@ urlpatterns = [
     path('stats/', views.user_booking_stats, name='user_booking_stats'),
     path('upcoming/', views.upcoming_bookings, name='upcoming_bookings'),
 
+      path('admin/all/', views.admin_all_bookings, name='admin_all_bookings'),
+    path('admin/<str:booking_reference>/confirm/', views.admin_confirm_booking, name='admin_confirm_booking'),
+    path('admin/<str:booking_reference>/decline/', views.admin_decline_booking, name='admin_decline_booking'),
+    path('admin/<str:booking_reference>/voucher/', views.admin_booking_voucher, name='admin_booking_voucher'),
+
 ]
