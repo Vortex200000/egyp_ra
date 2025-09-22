@@ -298,7 +298,7 @@ if ENVIRONMENT == 'development':
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['egypra-production.up.railway.app' , '127.0.0.1' , 'localhost']
+ALLOWED_HOSTS = ['egypra-production.up.railway.app' , '127.0.0.1' , 'localhost','https://egypt-ra.osc-fr1.scalingo.io']
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
@@ -510,13 +510,15 @@ CSRF_TRUSTED_ORIGINS = [
     "https://egyptra-front.vercel.app", 
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    'https://egypt-ra.osc-fr1.scalingo.io'
+    
 ]
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
  "https://egyptra-front.vercel.app" , 
-
+'https://egypt-ra.osc-fr1.scalingo.io'
     "https://egypra-production.up.railway.app",
 
 
