@@ -39,6 +39,157 @@ class CreateBookingView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+    def send_owner_notification_email(booking, action_type, additional_info=None):
+        """
+        Send notification email to site owner about booking actions
+        action_type: 'new_booking', 'cancellation', 'admin_confirmation', 'admin_decline'
+        """
+        try:
+            owner_email = 'mimmosafari56@gmail.com'
+            
+            # Determine subject and content based on action type
+            if action_type == 'new_booking':
+                subject = f'New Booking - {booking.booking_reference}'
+                action_text = 'A new booking has been created'
+                status_color = '#007bff'  # Blue
+            elif action_type == 'cancellation':
+                subject = f'Booking Cancelled - {booking.booking_reference}'
+                action_text = 'A booking has been cancelled'
+                status_color = '#dc3545'  # Red
+            elif action_type == 'admin_confirmation':
+                subject = f'Booking Confirmed by Admin - {booking.booking_reference}'
+                action_text = 'You have confirmed this booking'
+                status_color = '#28a745'  # Green
+            elif action_type == 'admin_decline':
+                subject = f'Booking Declined by Admin - {booking.booking_reference}'
+                action_text = 'You have declined this booking'
+                status_color = '#ffc107'  # Yellow
+            else:
+                subject = f'Booking Update - {booking.booking_reference}'
+                action_text = 'Booking status has been updated'
+                status_color = '#6c757d'  # Gray
+
+            # HTML email content
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Booking Notification</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
+                <div style="background: {status_color}; color: white; padding: 20px; text-align: center;">
+                    <h2 style="margin: 0;">EGYPET_RA TOURS</h2>
+                    <p style="margin: 5px 0 0 0;">Booking Notification</p>
+                </div>
+                
+                <div style="padding: 20px; background: white; border: 1px solid #ddd;">
+                    <h3 style="color: {status_color}; margin-top: 0;">{action_text}</h3>
+                    
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Booking Reference:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.booking_reference}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Customer:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.full_name}</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Email:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.email}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Phone:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.phone or 'Not provided'}</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Tour:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.tour.title}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Date:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.preferred_date}</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Time:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.preferred_time or 'To be confirmed'}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Travelers:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{booking.number_of_travelers}</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Total Amount:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">${booking.total_amount} USD</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">Status:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd; color: {status_color}; font-weight: bold;">{booking.booking_status.upper()}</td>
+                        </tr>
+                    </table>
+                    
+                    {f'<div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0;"><strong>Additional Info:</strong> {additional_info}</div>' if additional_info else ''}
+                    
+                    {f'<div style="background: #f8f9ff; padding: 15px; border-radius: 5px; margin: 15px 0;"><strong>Special Requests:</strong> {booking.special_requests}</div>' if booking.special_requests else ''}
+                    
+                    <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                        Generated automatically by EGYPET_RA TOURS booking system on {timezone.now().strftime('%Y-%m-%d at %H:%M')}
+                    </p>
+                </div>
+            </body>
+            </html>
+            """
+
+            # Plain text version
+            plain_content = f"""
+    {action_text.upper()}
+
+    Booking Details:
+    ================
+    Reference: {booking.booking_reference}
+    Customer: {booking.full_name}
+    Email: {booking.email}
+    Phone: {booking.phone or 'Not provided'}
+    Tour: {booking.tour.title}
+    Date: {booking.preferred_date}
+    Time: {booking.preferred_time or 'To be confirmed'}
+    Travelers: {booking.number_of_travelers}
+    Total: ${booking.total_amount} USD
+    Status: {booking.booking_status.upper()}
+
+    {f'Additional Info: {additional_info}' if additional_info else ''}
+    {f'Special Requests: {booking.special_requests}' if booking.special_requests else ''}
+
+    Generated on {timezone.now().strftime('%Y-%m-%d at %H:%M')}
+    EGYPET_RA TOURS Booking System
+            """
+
+            # Create and send email
+            email = EmailMultiAlternatives(
+                subject=subject,
+                body=plain_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[owner_email],
+                headers={
+                    'X-Mailer': 'EGYPET_RA TOURS Booking System',
+                    'X-Priority': '3' if action_type == 'new_booking' else '2',  # Higher priority for new bookings
+                }
+            )
+            
+            email.attach_alternative(html_content, "text/html")
+            result = email.send(fail_silently=False)
+            
+            if result:
+                logger.info(f"Owner notification sent successfully for {action_type} - booking {booking.booking_reference}")
+                return True
+            else:
+                logger.warning(f"Owner notification failed for {action_type} - booking {booking.booking_reference}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Failed to send owner notification for {action_type} - booking {booking.booking_reference}: {e}")
+            return False
 
 
 
@@ -205,6 +356,12 @@ class CreateBookingView(generics.CreateAPIView):
         if not email_sent and email_error:
             response_data['email_warning'] = 'Booking created but confirmation email could not be sent'
         
+        try:
+            send_owner_notification_email(booking, 'new_booking')
+        except Exception as e:
+            logger.error(f"Failed to send owner notification for new booking {booking.booking_reference}: {e}")
+
+
         return Response(response_data, status=status.HTTP_201_CREATED)
     
 
@@ -480,6 +637,13 @@ class CancelBookingView(generics.GenericAPIView):
             'booking': BookingDetailSerializer(booking).data,
             'email_sent': email_sent
         }
+        try:
+            cancellation_info = f"Reason: {cancellation.get_reason_display()}"
+            if cancellation.reason_details:
+                cancellation_info += f" - {cancellation.reason_details}"
+            send_owner_notification_email(booking, 'cancellation', cancellation_info)
+        except Exception as e:
+            logger.error(f"Failed to send owner notification for cancellation {booking.booking_reference}: {e}")
 
         return Response(response_data)
 
@@ -536,19 +700,11 @@ class CancelBookingView(generics.GenericAPIView):
                         </table>
                     </div>
                     
-                    <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; border: 1px solid #bee5eb; margin: 20px 0;">
-                        <p style="margin: 0; color: #0c5460;"><strong>💰 Refund Information:</strong> Your refund will be processed within 5-7 business days using the original payment method.</p>
-                    </div>
+                 
                     
                     <p style="font-size: 16px;">We're sorry to see you cancel your tour. If you'd like to reschedule or book another tour in the future, we'd be happy to help!</p>
                     
-                    <div style="text-align: center; margin: 30px 0;">
-                        <p style="font-size: 16px; margin: 0;">Questions about your cancellation?</p>
-                        <p style="margin: 10px 0;">
-                            📧 <a href="mailto:support@egypt-tours.com" style="color: #ff6b6b;">support@egypt-tours.com</a><br>
-                            📞 <a href="tel:+201234567890" style="color: #ff6b6b;">+20 123 456 7890</a>
-                        </p>
-                    </div>
+                  
                 </div>
                 
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; border: 1px solid #ddd; border-top: none;">
@@ -573,9 +729,7 @@ Booking Reference: {booking.booking_reference}
 Tour: {booking.tour.title}
 Original Date: {booking.preferred_date}
 Cancellation Reason: {cancellation.get_reason_display()}
-Refund Amount: ${cancellation.refund_amount} USD
 
-REFUND: Your refund will be processed within 5-7 business days using the original payment method.
 
 We're sorry to see you cancel your tour. If you'd like to reschedule or book another tour in the future, we'd be happy to help!
 

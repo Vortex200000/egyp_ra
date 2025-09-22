@@ -55,7 +55,7 @@ class TourListSerializer(serializers.ModelSerializer):
             'id', 'title', 'slug', 'short_description', 'location', 'price', 
             'original_price', 'duration', 'max_persons', 'cover_photo', 'rating', 
             'review_count', 'category_name', 'difficulty', 'is_featured', 
-            'discount_percentage', 'is_on_sale'
+            'discount_percentage', 'is_on_sale' 
         ]
 
 class TourDetailSerializer(serializers.ModelSerializer):
