@@ -300,7 +300,7 @@ else:
 
 ALLOWED_HOSTS = [
     # 'egypra-production.up.railway.app'
-      '127.0.0.1' , 'localhost','https://egypt-ra.osc-fr1.scalingo.io']
+      '127.0.0.1' , 'localhost','egypt-ra.osc-fr1.scalingo.io']
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
