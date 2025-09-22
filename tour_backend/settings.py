@@ -520,7 +520,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
  "https://egyptra-front.vercel.app" , 
-'egypt-ra.osc-fr1.scalingo.io'
+'https://egypt-ra.osc-fr1.scalingo.io'
     # "https://egypra-production.up.railway.app",
 
 
