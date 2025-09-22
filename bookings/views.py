@@ -997,6 +997,7 @@ def admin_all_bookings(request):
             'preferred_time': booking.preferred_time,
             'number_of_travelers': booking.number_of_travelers,
             'total_amount': booking.total_amount,
+            'phone_num':booking.phone , 
             'booking_status': booking.booking_status,
             'payment_status': booking.payment_status,
             'created_at': booking.created_at,
