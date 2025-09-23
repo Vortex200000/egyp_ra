@@ -20,6 +20,8 @@ def send_contact_email(request):
     API endpoint to send contact form emails to support
     """
     resend.api_key = settings.RESEND_API_KEY
+    logger.warning(f"{resend.api_key}")
+
     try:
         # Get form data
         name = request.data.get('name', '').strip()
