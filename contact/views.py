@@ -11,6 +11,7 @@ import resend
 import os
 from environ import Env
 import dotenv
+
 logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
@@ -57,7 +58,7 @@ def send_contact_email(request):
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ EGYPET_RA TOURS</h1>
+                <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ NATA STORIA TRAVEL</h1>
                 <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 16px;">Contact Form Submission</p>
             </div>
             
@@ -91,14 +92,14 @@ def send_contact_email(request):
                 
                 <div style="text-align: center; margin: 30px 0;">
                     <p style="font-size: 14px; color: #6c757d; margin: 0;">
-                        This message was sent from the EGYPET_RA TOURS contact form.
+                        This message was sent from the NATA STORIA TRAVEL contact form.
                     </p>
                 </div>
             </div>
             
             <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; border: 1px solid #ddd; border-top: none;">
                 <p style="margin: 0; color: #6c757d; font-size: 14px;">
-                    <strong style="color: #667eea;">EGYPET_RA TOURS</strong><br>
+                    <strong style="color: #667eea;">NATA STORIA TRAVEL</strong><br>
                     Contact Form Notification System
                 </p>
             </div>
@@ -108,7 +109,7 @@ def send_contact_email(request):
         
         # Create plain text version
         plain_content = f"""
-New Contact Form Submission - EGYPET_RA TOURS
+New Contact Form Submission - NATA STORIA TRAVEL
 ==============================================
 
 CONTACT DETAILS:
@@ -120,49 +121,37 @@ MESSAGE:
 {message}
 
 ---
-This message was sent from the EGYPET_RA TOURS contact form.
+This message was sent from the NATA STORIA TRAVEL contact form.
 Please reply directly to {email} to respond to the customer.
         """
-        # mimmosafari56@gmail.com
-        # Create email message
-        # email_message = EmailMultiAlternatives(
-        #     subject=email_subject,
-        #     body=plain_content,
-        #     from_email=f"EGYPET_RA TOURS Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
-        #     to=['mimmosafari56@gmail.com'],  # Your support email
-        #     reply_to=[email],  # Set customer email as reply-to
-        #     headers={
-        #         'X-Mailer': 'EGYPET_RA TOURS Contact System',
-        #         'X-Priority': '3',
-        #         'Importance': 'Normal'
-        #     }
-        # )
+        
+        # Send email using Resend
         params: resend.Emails.SendParams = {
-    "from": f"NATA STORIA TRAVEL Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
-    "to": ['omaressam744@gmail.com'], 
-    "subject": email_subject,
-    "html": plain_content,
-}
-        email = resend.Emails.send(params)
+            "from": f"NATA STORIA TRAVEL Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
+            "to": ['omaressam744@gmail.com'], 
+            "subject": email_subject,
+            "html": html_content,  # Fixed: use html_content for HTML email
+            "text": plain_content,  # Add plain text version too
+            "reply_to": [email],  # Set customer email as reply-to
+        }
         
-        # Attach HTML version
-        # email_message.attach_alternative(html_content, "text/html")
+        # Send the email
+        email_response = resend.Emails.send(params)
         
-        # Send email
-        # result = email_message.send(fail_silently=False)
-        
-        # if result:
-        #     logger.info(f"Contact form email sent successfully from {email}")
-        #     return Response({
-        #         'success': True,
-        #         'message': 'Your message has been sent successfully! We will get back to you within 24 hours.'
-        #     }, status=status.HTTP_200_OK)
-        # else:
-        #     logger.warning(f"Contact form email sending returned False for {email}")
-        #     return Response({
-        #         'error': 'Email sending failed',
-        #         'message': 'There was an issue sending your message. Please try again or contact us directly.'
-        #     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Check if email was sent successfully
+        if email_response and email_response.get('id'):
+            logger.info(f"Contact form email sent successfully from {email}. Resend ID: {email_response.get('id')}")
+            return Response({
+                'success': True,
+                'message': 'Your message has been sent successfully! We will get back to you within 24 hours.',
+                'email_id': email_response.get('id')  # Optional: include Resend email ID
+            }, status=status.HTTP_200_OK)
+        else:
+            logger.warning(f"Contact form email sending failed for {email}. Response: {email_response}")
+            return Response({
+                'error': 'Email sending failed',
+                'message': 'There was an issue sending your message. Please try again or contact us directly.'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
     except Exception as e:
         logger.error(f"Failed to send contact form email: {e}")
@@ -172,13 +161,13 @@ Please reply directly to {email} to respond to the customer.
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# Auto-reply function (optional)
+# Auto-reply function using Resend
 def send_auto_reply_email(name, email):
     """
-    Send an auto-reply confirmation to the customer
+    Send an auto-reply confirmation to the customer using Resend
     """
     try:
-        subject = 'Thank you for contacting EGYPET_RA TOURS! 🏛️'
+        subject = 'Thank you for contacting NATA STORIA TRAVEL! 🏛️'
         
         html_content = f"""
         <!DOCTYPE html>
@@ -190,7 +179,7 @@ def send_auto_reply_email(name, email):
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ EGYPET_RA TOURS</h1>
+                <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ NATA STORIA TRAVEL</h1>
                 <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 16px;">Thank You for Reaching Out!</p>
             </div>
             
@@ -199,17 +188,17 @@ def send_auto_reply_email(name, email):
                 
                 <p style="font-size: 16px;">Dear <strong>{name}</strong>,</p>
                 
-                <p style="font-size: 16px;">Thank you for contacting EGYPET_RA TOURS! We have received your message and will respond within 24 hours.</p>
+                <p style="font-size: 16px;">Thank you for contacting NATA STORIA TRAVEL! We have received your message and will respond within 24 hours.</p>
                 
                 <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 25px 0;">
-                    <p style="margin: 0; font-size: 16px;">In the meantime, feel free to explore our <strong>amazing tours</strong> and discover the wonders of Egypt!</p>
+                    <p style="margin: 0; font-size: 16px;">In the meantime, feel free to explore our <strong>amazing tours</strong> and discover the wonders of travel!</p>
                 </div>
                 
                 <div style="text-align: center; margin: 30px 0;">
                     <p style="font-size: 16px; margin: 0;">Need immediate assistance?</p>
                     <p style="margin: 10px 0;">
                         📞 <a href="tel:+201093706046" style="color: #667eea;">+20 109 370 6046</a><br>
-                        📧 <a href="mailto:mimmosafari56@gmail.com" style="color: #667eea;">mimmosafari56@gmail.com</a>
+                        📧 <a href="mailto:omaressam744@gmail.com" style="color: #667eea;">omaressam744@gmail.com</a>
                     </p>
                 </div>
             </div>
@@ -217,7 +206,7 @@ def send_auto_reply_email(name, email):
             <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; border: 1px solid #ddd; border-top: none;">
                 <p style="margin: 0; color: #6c757d; font-size: 14px;">
                     Best regards,<br>
-                    <strong style="color: #667eea;">EGYPET_RA TOURS Team</strong>
+                    <strong style="color: #667eea;">NATA STORIA TRAVEL Team</strong>
                 </p>
             </div>
         </body>
@@ -227,27 +216,28 @@ def send_auto_reply_email(name, email):
         plain_content = f"""
 Dear {name},
 
-Thank you for contacting EGYPET_RA TOURS! We have received your message and will respond within 24 hours.
+Thank you for contacting NATA STORIA TRAVEL! We have received your message and will respond within 24 hours.
 
-In the meantime, feel free to explore our amazing tours and discover the wonders of Egypt!
+In the meantime, feel free to explore our amazing tours and discover the wonders of travel!
 
 Need immediate assistance?
 Phone: +20 109 370 6046
-Email: mimmosafari56@gmail.com
+Email: omaressam744@gmail.com
 
 Best regards,
-EGYPET_RA TOURS Team
+NATA STORIA TRAVEL Team
         """
         
-        email_message = EmailMultiAlternatives(
-            subject=subject,
-            body=plain_content,
-            from_email=f"EGYPET_RA TOURS <{settings.DEFAULT_FROM_EMAIL}>",
-            to=[email],
-        )
+        params: resend.Emails.SendParams = {
+            "from": f"NATA STORIA TRAVEL <{settings.DEFAULT_FROM_EMAIL}>",
+            "to": [email],
+            "subject": subject,
+            "html": html_content,
+            "text": plain_content,
+        }
         
-        email_message.attach_alternative(html_content, "text/html")
-        return email_message.send(fail_silently=True)
+        response = resend.Emails.send(params)
+        return response and response.get('id') is not None
         
     except Exception as e:
         logger.error(f"Failed to send auto-reply email to {email}: {e}")
@@ -275,8 +265,16 @@ def send_contact_email_with_auto_reply(request):
                 'message': 'Name, email, and message are required.'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Send to support team
-        support_email_sent = send_contact_email(request).status_code == 200
+        # Validate email format (basic validation)
+        if '@' not in email or '.' not in email:
+            return Response({
+                'error': 'Invalid email format',
+                'message': 'Please provide a valid email address.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Send to support team (call the main function)
+        support_response = send_contact_email(request)
+        support_email_sent = support_response.status_code == 200
         
         # Send auto-reply to customer
         auto_reply_sent = send_auto_reply_email(name, email)
@@ -288,10 +286,8 @@ def send_contact_email_with_auto_reply(request):
                 'auto_reply_sent': auto_reply_sent
             }, status=status.HTTP_200_OK)
         else:
-            return Response({
-                'error': 'Email sending failed',
-                'message': 'There was an issue sending your message. Please try again or contact us directly.'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Return the original error response from send_contact_email
+            return support_response
             
     except Exception as e:
         logger.error(f"Failed to process contact form: {e}")
