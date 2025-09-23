@@ -186,7 +186,7 @@ logger = logging.getLogger(__name__)
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Check authentication
-        if self.scope["user"] is AnonymousUser or not self.scope["user"].is_authenticated:
+        if isinstance(self.scope["user"], AnonymousUser) or not self.scope["user"].is_authenticated:
             logger.warning("Unauthenticated user attempted WebSocket connection")
             await self.close()
             return
