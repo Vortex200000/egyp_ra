@@ -301,7 +301,12 @@ else:
 
 ALLOWED_HOSTS = [
     'egypra-production.up.railway.app' ,
-      '127.0.0.1' , 'localhost'
+      '127.0.0.1' , 'localhost' , 
+      "www.nata-storia-travel.com",
+"nata-storia-travel.com",
+ "egyptra-front.vercel.app" , 
+
+
     #   ,'egypt-ra.osc-fr1.scalingo.io'
       ]
 CLOUDINARY_STORAGE = {
