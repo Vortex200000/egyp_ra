@@ -512,7 +512,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://egyptra-front.vercel.app", 
     "http://localhost:8080",
     "http://127.0.0.1:8080",
-    'https://egypt-ra.osc-fr1.scalingo.io'
+    'https://egypt-ra.osc-fr1.scalingo.io' , 
+'www.nata-storia-travel.com',
+'nata-storia-travel.com',
+    
     
 ]
 
@@ -520,7 +523,10 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
  "https://egyptra-front.vercel.app" , 
-'https://egypt-ra.osc-fr1.scalingo.io'
+'https://egypt-ra.osc-fr1.scalingo.io', 
+'www.nata-storia-travel.com',
+'nata-storia-travel.com',
+
     # "https://egypra-production.up.railway.app",
 
 
