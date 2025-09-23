@@ -300,8 +300,10 @@ else:
     DEBUG = False
 
 ALLOWED_HOSTS = [
-    # 'egypra-production.up.railway.app'
-      '127.0.0.1' , 'localhost','egypt-ra.osc-fr1.scalingo.io']
+    'egypra-production.up.railway.app' ,
+      '127.0.0.1' , 'localhost'
+    #   ,'egypt-ra.osc-fr1.scalingo.io'
+      ]
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
@@ -509,11 +511,11 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 CSRF_TRUSTED_ORIGINS = [
-    # "https://egypra-production.up.railway.app",
+    "https://egypra-production.up.railway.app",
     "https://egyptra-front.vercel.app", 
     "http://localhost:8080",
     "http://127.0.0.1:8080",
-    'https://egypt-ra.osc-fr1.scalingo.io' , 
+    # 'https://egypt-ra.osc-fr1.scalingo.io' , 
 'www.nata-storia-travel.com',
 'nata-storia-travel.com',
     
@@ -524,11 +526,11 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
  "https://egyptra-front.vercel.app" , 
-'https://egypt-ra.osc-fr1.scalingo.io', 
+# 'https://egypt-ra.osc-fr1.scalingo.io', 
  "https://www.nata-storia-travel.com",
     "https://nata-storia-travel.com",
 
-    # "https://egypra-production.up.railway.app",
+    "https://egypra-production.up.railway.app",
 
 
     "http://127.0.0.1:8080",
