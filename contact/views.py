@@ -9,6 +9,8 @@ from django.conf import settings
 import logging
 import resend
 import os
+from environ import Env
+import dotenv
 logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
@@ -17,7 +19,7 @@ def send_contact_email(request):
     """
     API endpoint to send contact form emails to support
     """
-    resend.api_key = os.environ["RESEND_API_KEY"]
+    resend.api_key = settings.RESEND_API_KEY
     try:
         # Get form data
         name = request.data.get('name', '').strip()
@@ -134,10 +136,10 @@ Please reply directly to {email} to respond to the customer.
         #     }
         # )
         params: resend.Emails.SendParams = {
-    "from": "Acme <onboarding@resend.dev>",
-    "to": ["delivered@resend.dev"],
-    "subject": "hello world",
-    "html": "<strong>it works!</strong>",
+    "from": f"NATA STORIA TRAVEL Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
+    "to": ['omaressam744@gmail.com'], 
+    "subject": email_subject,
+    "html": plain_content,
 }
         email = resend.Emails.send(params)
         

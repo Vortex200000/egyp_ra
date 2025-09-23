@@ -293,7 +293,7 @@ dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
 
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
-
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY' , 'default')
 if ENVIRONMENT == 'development':
     DEBUG = True
 else:
