@@ -22,7 +22,7 @@ def get_turbo_smtp_auth_key():
     
     auth_data = {
         "email": "omaressam744@gmail.com",  # Your Turbo SMTP username
-        "password": settings.EMAIL_HOST_PASSWORD,  # From environment variable
+        "password": "a0Wq6fwm",  # From environment variable
         "no_expire": True
     }
     
@@ -219,7 +219,7 @@ Please reply directly to {email} to respond to the customer.
         #     }
         # )
         success, error_msg = send_email_via_turbo_api(
-            to_emails=['mimmosafari56@gmail.com'],  # Your support email
+            to_emails=['omaressam746@gmail.com'],  # Your support email
             subject=email_subject,
             text_content=plain_content,
             html_content=html_content,
