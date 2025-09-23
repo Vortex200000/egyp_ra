@@ -6,96 +6,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-
-from django.conf import settings
-import requests
-
-
 import logging
 
 logger = logging.getLogger(__name__)
-def get_turbo_smtp_auth_key():
-    """
-    Authenticate with Turbo SMTP and get API key
-    """
-    auth_url = "https://pro.api.serversmtp.com/api/v2/authentication/authorize"
-    
-    auth_data = {
-        "email": "omaressam744@gmail.com",  # Your Turbo SMTP username
-        "password": "a0Wq6fwm",  # From environment variable
-        "no_expire": True
-    }
-    
-    try:
-        response = requests.post(auth_url, json=auth_data, timeout=30)
-        response.raise_for_status()
-        
-        result = response.json()
-        auth_key = result.get('auth')
-        
-        if auth_key:
-            logger.info("Turbo SMTP authentication successful")
-            return auth_key
-        else:
-            logger.error("No auth key returned from Turbo SMTP")
-            return None
-            
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Turbo SMTP authentication failed: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Unexpected error during Turbo SMTP auth: {e}")
-        return None
-    
-
-
-
-def send_email_via_turbo_api(to_emails, subject, text_content, html_content=None, from_email=None, reply_to=None):
-    """
-    Send email using Turbo SMTP API
-    """
-    # Get authentication key
-    auth_key = get_turbo_smtp_auth_key()
-    if not auth_key:
-        return False, "Failed to authenticate with Turbo SMTP"
-    
-    # Prepare email data
-    email_data = {
-        "from": from_email or "omaressam744@gmail.com",
-        "to": to_emails if isinstance(to_emails, list) else [to_emails],
-        "subject": subject,
-        "content": text_content
-    }
-    
-    # Add HTML content if provided
-    if html_content:
-        email_data["htmlcontent"] = html_content
-    
-    # Add reply-to if provided
-    if reply_to:
-        email_data["replyto"] = reply_to
-    
-    # Send via API
-    send_url = "https://pro.api.serversmtp.com/api/v2/mail/send"
-    headers = {
-        'Authorization': auth_key,
-        'Content-Type': 'application/json'
-    }
-    
-    try:
-        response = requests.post(send_url, json=email_data, headers=headers, timeout=30)
-        response.raise_for_status()
-        
-        result = response.json()
-        logger.info(f"Email sent via Turbo SMTP API: {result}")
-        return True, "Email sent successfully"
-        
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Failed to send email via Turbo SMTP API: {e}")
-        return False, str(e)
-    except Exception as e:
-        logger.error(f"Unexpected error sending email: {e}")
-        return False, str(e)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])  # Allow unauthenticated users to send contact emails
@@ -206,63 +119,36 @@ Please reply directly to {email} to respond to the customer.
         """
         # mimmosafari56@gmail.com
         # Create email message
-        # email_message = EmailMultiAlternatives(
-        #     subject=email_subject,
-        #     body=plain_content,
-        #     from_email=f"EGYPET_RA TOURS Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
-        #     to=['mimmosafari56@gmail.com'],  # Your support email
-        #     reply_to=[email],  # Set customer email as reply-to
-        #     headers={
-        #         'X-Mailer': 'EGYPET_RA TOURS Contact System',
-        #         'X-Priority': '3',
-        #         'Importance': 'Normal'
-        #     }
-        # )
-        success, error_msg = send_email_via_turbo_api(
-            to_emails=['omaressam746@gmail.com'],  # Your support email
+        email_message = EmailMultiAlternatives(
             subject=email_subject,
-            text_content=plain_content,
-            html_content=html_content,
-            from_email="omaressam744@gmail.com",
-            reply_to=email
+            body=plain_content,
+            from_email=f"EGYPET_RA TOURS Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
+            to=['mimmosafari56@gmail.com'],  # Your support email
+            reply_to=[email],  # Set customer email as reply-to
+            headers={
+                'X-Mailer': 'EGYPET_RA TOURS Contact System',
+                'X-Priority': '3',
+                'Importance': 'Normal'
+            }
         )
+        
         # Attach HTML version
-    #     email_message.attach_alternative(html_content, "text/html")
+        email_message.attach_alternative(html_content, "text/html")
         
-    #     # Send email
-    #     result = email_message.send(fail_silently=False)
+        # Send email
+        result = email_message.send(fail_silently=False)
         
-    #     if result:
-    #         logger.info(f"Contact form email sent successfully from {email}")
-    #         return Response({
-    #             'success': True,
-    #             'message': 'Your message has been sent successfully! We will get back to you within 24 hours.'
-    #         }, status=status.HTTP_200_OK)
-    #     else:
-    #         logger.warning(f"Contact form email sending returned False for {email}")
-    #         return Response({
-    #             'error': 'Email sending failed',
-    #             'message': 'There was an issue sending your message. Please try again or contact us directly.'
-    #         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-    # except Exception as e:
-    #     logger.error(f"Failed to send contact form email: {e}")
-    #     return Response({
-    #         'error': 'Internal server error',
-    #         'message': 'An unexpected error occurred. Please try again later or contact us directly.'
-    #     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        if success:
+        if result:
             logger.info(f"Contact form email sent successfully from {email}")
             return Response({
                 'success': True,
                 'message': 'Your message has been sent successfully! We will get back to you within 24 hours.'
             }, status=status.HTTP_200_OK)
         else:
-            logger.warning(f"Contact form email sending failed for {email}: {error_msg}")
+            logger.warning(f"Contact form email sending returned False for {email}")
             return Response({
                 'error': 'Email sending failed',
-                'message': 'There was an issue sending your message. Please try again or contact us directly.',
-                'details': error_msg
+                'message': 'There was an issue sending your message. Please try again or contact us directly.'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
     except Exception as e:
@@ -271,8 +157,6 @@ Please reply directly to {email} to respond to the customer.
             'error': 'Internal server error',
             'message': 'An unexpected error occurred. Please try again later or contact us directly.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 
 # Auto-reply function (optional)
