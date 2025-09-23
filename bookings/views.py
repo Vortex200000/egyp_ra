@@ -1650,7 +1650,7 @@ class CreateBookingView(generics.CreateAPIView):
                     <div style="text-align: center; margin: 30px 0;">
                         <p style="font-size: 16px; margin: 0;">Questions? We're here to help!</p>
                         <p style="margin: 10px 0;">
-                            📧 <a href="mailto:omaressam744@gmail.com" style="color: #667eea;">omaressam744@gmail.com</a><br>
+                            📧 <a href="mailto:mimmosafari56@gmail.com" style="color: #667eea;">mimmosafari56@gmail.com</a><br>
                             📞 <a href="tel:+201093706046" style="color: #667eea;">+20 109 370 6046</a>
                         </p>
                     </div>
@@ -1689,7 +1689,7 @@ PAYMENT: You can pay on arrival or we'll contact you with payment options.
 We will contact you within 24 hours to confirm your booking details and provide any additional information you may need.
 
 Questions? Contact us:
-Email: omaressam744@gmail.com
+Email: mimmosafari56@gmail.com
 Phone: +20 109 370 6046
 
 Best regards,
@@ -1924,7 +1924,7 @@ class CancelBookingView(generics.GenericAPIView):
                     <div style="text-align: center; margin: 30px 0;">
                         <p style="font-size: 16px; margin: 0;">Questions? We're here to help!</p>
                         <p style="margin: 10px 0;">
-                            📧 <a href="mailto:omaressam744@gmail.com" style="color: #ff6b6b;">omaressam744@gmail.com</a><br>
+                            📧 <a href="mailto:mimmosafari56@gmail.com" style="color: #ff6b6b;">mimmosafari56@gmail.com</a><br>
                             📞 <a href="tel:+201093706046" style="color: #ff6b6b;">+20 109 370 6046</a>
                         </p>
                     </div>
@@ -1957,7 +1957,7 @@ Refund Amount: ${cancellation.refund_amount} USD
 We're sorry to see you cancel your tour. If you'd like to reschedule or book another tour in the future, we'd be happy to help!
 
 Questions? Contact us:
-Email: omaressam744@gmail.com
+Email: mimmosafari56@gmail.com
 Phone: +20 109 370 6046
 
 Best regards,
@@ -2158,7 +2158,7 @@ def booking_voucher(request, booking_reference):
         "• Contact us if you need to make any changes",
         "",
         "Contact Information:",
-        "📧 Email: omaressam744@gmail.com",
+        "📧 Email: mimmosafari56@gmail.com",
         "📞 Phone: +20 109 370 6046",
         "🌐 Website: www.natastoriatravel.com"
     ]
@@ -2389,7 +2389,7 @@ def send_admin_confirmation_email(booking):
             
             <div style="text-align: center; margin: 20px 0;">
                 <p>Questions? Contact us:</p>
-                <p>📧 <a href="mailto:omaressam744@gmail.com">omaressam744@gmail.com</a><br>
+                <p>📧 <a href="mailto:mimmosafari56@gmail.com">mimmosafari56@gmail.com</a><br>
                 📞 <a href="tel:+201093706046">+20 109 370 6046</a></p>
             </div>
             
@@ -2416,7 +2416,7 @@ Total: ${booking.total_amount}
 We will contact you soon with more details about your tour.
 
 Questions? Contact us:
-Email: omaressam744@gmail.com
+Email: mimmosafari56@gmail.com
 Phone: +20 109 370 6046
 
 Best regards,
@@ -2469,7 +2469,7 @@ def send_admin_decline_email(booking, reason):
             
             <div style="text-align: center; margin: 20px 0;">
                 <p>Questions? Contact us:</p>
-                <p>📧 <a href="mailto:omaressam744@gmail.com">omaressam744@gmail.com</a><br>
+                <p>📧 <a href="mailto:mimmosafari56@gmail.com">mimmosafari56@gmail.com</a><br>
                 📞 <a href="tel:+201093706046">+20 109 370 6046</a></p>
             </div>
             
@@ -2494,7 +2494,7 @@ Reason: {reason}
 If you have any questions, please contact us.
 
 Questions? Contact us:
-Email: omaressam744@gmail.com
+Email: mimmosafari56@gmail.com
 Phone: +20 109 370 6046
 
 Best regards,
