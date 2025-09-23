@@ -7,7 +7,8 @@ from rest_framework import status
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 import logging
-
+import resend
+import os
 logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
@@ -16,6 +17,7 @@ def send_contact_email(request):
     """
     API endpoint to send contact form emails to support
     """
+    resend.api_key = os.environ["RESEND_API_KEY"]
     try:
         # Get form data
         name = request.data.get('name', '').strip()
@@ -119,37 +121,44 @@ Please reply directly to {email} to respond to the customer.
         """
         # mimmosafari56@gmail.com
         # Create email message
-        email_message = EmailMultiAlternatives(
-            subject=email_subject,
-            body=plain_content,
-            from_email=f"EGYPET_RA TOURS Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
-            to=['mimmosafari56@gmail.com'],  # Your support email
-            reply_to=[email],  # Set customer email as reply-to
-            headers={
-                'X-Mailer': 'EGYPET_RA TOURS Contact System',
-                'X-Priority': '3',
-                'Importance': 'Normal'
-            }
-        )
+        # email_message = EmailMultiAlternatives(
+        #     subject=email_subject,
+        #     body=plain_content,
+        #     from_email=f"EGYPET_RA TOURS Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
+        #     to=['mimmosafari56@gmail.com'],  # Your support email
+        #     reply_to=[email],  # Set customer email as reply-to
+        #     headers={
+        #         'X-Mailer': 'EGYPET_RA TOURS Contact System',
+        #         'X-Priority': '3',
+        #         'Importance': 'Normal'
+        #     }
+        # )
+        params: resend.Emails.SendParams = {
+    "from": "Acme <onboarding@resend.dev>",
+    "to": ["delivered@resend.dev"],
+    "subject": "hello world",
+    "html": "<strong>it works!</strong>",
+}
+        email = resend.Emails.send(params)
         
         # Attach HTML version
-        email_message.attach_alternative(html_content, "text/html")
+        # email_message.attach_alternative(html_content, "text/html")
         
         # Send email
-        result = email_message.send(fail_silently=False)
+        # result = email_message.send(fail_silently=False)
         
-        if result:
-            logger.info(f"Contact form email sent successfully from {email}")
-            return Response({
-                'success': True,
-                'message': 'Your message has been sent successfully! We will get back to you within 24 hours.'
-            }, status=status.HTTP_200_OK)
-        else:
-            logger.warning(f"Contact form email sending returned False for {email}")
-            return Response({
-                'error': 'Email sending failed',
-                'message': 'There was an issue sending your message. Please try again or contact us directly.'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # if result:
+        #     logger.info(f"Contact form email sent successfully from {email}")
+        #     return Response({
+        #         'success': True,
+        #         'message': 'Your message has been sent successfully! We will get back to you within 24 hours.'
+        #     }, status=status.HTTP_200_OK)
+        # else:
+        #     logger.warning(f"Contact form email sending returned False for {email}")
+        #     return Response({
+        #         'error': 'Email sending failed',
+        #         'message': 'There was an issue sending your message. Please try again or contact us directly.'
+        #     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
     except Exception as e:
         logger.error(f"Failed to send contact form email: {e}")
