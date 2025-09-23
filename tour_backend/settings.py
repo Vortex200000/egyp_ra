@@ -525,7 +525,7 @@ CORS_ALLOWED_ORIGINS = [
  "https://egyptra-front.vercel.app" , 
 'https://egypt-ra.osc-fr1.scalingo.io', 
  "https://www.nata-storia-travel.com",
-    "https://nata-storia-travel.com"
+    "https://nata-storia-travel.com",
 
     # "https://egypra-production.up.railway.app",
 
