@@ -554,7 +554,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_US')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASS')
 
 
-DEFAULT_FROM_EMAIL = 'omaressam744@gmail.com'
+DEFAULT_FROM_EMAIL = 'support@nata-storia-travel.com'
 AUTH_USER_MODEL = 'accounts.User'
 # Stripe Configuration (add your keys)
 # STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_publishable_key'
