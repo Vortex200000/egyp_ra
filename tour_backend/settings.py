@@ -299,7 +299,7 @@ else:
     DEBUG = False
 
 ALLOWED_HOSTS = [
-    'egypra-production.up.railway.app'
+    'egypra-production.up.railway.app',
       '127.0.0.1' , 'localhost',
     #   'egypt-ra.osc-fr1.scalingo.io'
       ]
