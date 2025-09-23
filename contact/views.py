@@ -8,9 +8,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 import logging
 import resend
-import os
-from environ import Env
-import dotenv
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,7 @@ def send_contact_email(request):
     API endpoint to send contact form emails to support
     """
     resend.api_key = settings.RESEND_API_KEY
-    logger.warning(f"{resend.api_key}")
+ 
 
     try:
         # Get form data
@@ -58,15 +57,15 @@ def send_contact_email(request):
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ NATA STORIA TRAVEL</h1>
+                <h1 style="color: white; margin: 0; font-size: 28px;"> NATA STORIA TRAVEL</h1>
                 <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 16px;">Contact Form Submission</p>
             </div>
             
             <div style="background: white; padding: 30px; border: 1px solid #ddd; border-top: none;">
-                <h2 style="color: #667eea; margin-top: 0;">New Contact Form Message 📩</h2>
+                <h2 style="color: #667eea; margin-top: 0;">New Contact Form Message </h2>
                 
                 <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 25px 0;">
-                    <h3 style="color: #667eea; margin-top: 0;">📋 Contact Details</h3>
+                    <h3 style="color: #667eea; margin-top: 0;"> Contact Details</h3>
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #555; width: 120px;">Name:</td>
@@ -84,7 +83,7 @@ def send_contact_email(request):
                 </div>
                 
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <h3 style="color: #555; margin-top: 0;">💬 Message:</h3>
+                    <h3 style="color: #555; margin-top: 0;"> Message:</h3>
                     <div style="background: white; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6;">
                         <p style="margin: 0; color: #333; white-space: pre-wrap;">{message}</p>
                     </div>
@@ -128,7 +127,7 @@ Please reply directly to {email} to respond to the customer.
         # Send email using Resend
         params: resend.Emails.SendParams = {
             "from": f"NATA STORIA TRAVEL Contact Form <{settings.DEFAULT_FROM_EMAIL}>",
-            "to": ['omaressam744@gmail.com'], 
+            "to": ['mimmosafari56@gmail.com'], 
             "subject": email_subject,
             "html": html_content,  # Fixed: use html_content for HTML email
             "text": plain_content,  # Add plain text version too
@@ -167,7 +166,7 @@ def send_auto_reply_email(name, email):
     Send an auto-reply confirmation to the customer using Resend
     """
     try:
-        subject = 'Thank you for contacting NATA STORIA TRAVEL! 🏛️'
+        subject = 'Thank you for contacting NATA STORIA TRAVEL! '
         
         html_content = f"""
         <!DOCTYPE html>
@@ -179,12 +178,12 @@ def send_auto_reply_email(name, email):
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">🏛️ NATA STORIA TRAVEL</h1>
+                <h1 style="color: white; margin: 0; font-size: 28px;"> NATA STORIA TRAVEL</h1>
                 <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 16px;">Thank You for Reaching Out!</p>
             </div>
             
             <div style="background: white; padding: 30px; border: 1px solid #ddd; border-top: none;">
-                <h2 style="color: #667eea; margin-top: 0;">Message Received! ✅</h2>
+                <h2 style="color: #667eea; margin-top: 0;">Message Received! </h2>
                 
                 <p style="font-size: 16px;">Dear <strong>{name}</strong>,</p>
                 
@@ -197,8 +196,8 @@ def send_auto_reply_email(name, email):
                 <div style="text-align: center; margin: 30px 0;">
                     <p style="font-size: 16px; margin: 0;">Need immediate assistance?</p>
                     <p style="margin: 10px 0;">
-                        📞 <a href="tel:+201093706046" style="color: #667eea;">+20 109 370 6046</a><br>
-                        📧 <a href="mailto:omaressam744@gmail.com" style="color: #667eea;">omaressam744@gmail.com</a>
+                         <a href="tel:+201093706046" style="color: #667eea;">+20 109 370 6046</a><br>
+                         <a href="mailto:mimmosafari56@gmail.com" style="color: #667eea;">mimmosafari56@gmail.com</a>
                     </p>
                 </div>
             </div>
@@ -222,7 +221,7 @@ In the meantime, feel free to explore our amazing tours and discover the wonders
 
 Need immediate assistance?
 Phone: +20 109 370 6046
-Email: omaressam744@gmail.com
+Email: mimmosafari56@gmail.com
 
 Best regards,
 NATA STORIA TRAVEL Team
