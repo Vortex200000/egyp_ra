@@ -549,7 +549,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # For development
 
 
 EMAIL_HOST = os.environ.get('EMAIL_HOSTER')
-EMAIL_PORT = 587
+EMAIL_PORT = 25
 #set true on scalingo 
 EMAIL_USE_TLS = True  # Instead of SSL
 EMAIL_USE_SSL = False  # Disable SSL when using TLS
