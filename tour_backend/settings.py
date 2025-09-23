@@ -299,10 +299,8 @@ else:
     DEBUG = False
 
 ALLOWED_HOSTS = [
-    'egypra-production.up.railway.app',
-      '127.0.0.1' , 'localhost',
-    #   'egypt-ra.osc-fr1.scalingo.io'
-      ]
+    # 'egypra-production.up.railway.app'
+      '127.0.0.1' , 'localhost','egypt-ra.osc-fr1.scalingo.io']
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'NONE'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'NONE'),
@@ -525,11 +523,11 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
  "http://localhost:8080",
  "https://egyptra-front.vercel.app" , 
-# 'https://egypt-ra.osc-fr1.scalingo.io', 
+'https://egypt-ra.osc-fr1.scalingo.io', 
  "https://www.nata-storia-travel.com",
     "https://nata-storia-travel.com",
 
-    "https://egypra-production.up.railway.app",
+    # "https://egypra-production.up.railway.app",
 
 
     "http://127.0.0.1:8080",
@@ -549,15 +547,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # For development
 
 
 EMAIL_HOST = os.environ.get('EMAIL_HOSTER')
-# EMAIL_PORT = 587
-#set true on scalingo 
-# EMAIL_USE_TLS = False  # Instead of SSL
- # Disable SSL when using TLS
-
 EMAIL_PORT = 587
-EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
-
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_US')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASS')
 
