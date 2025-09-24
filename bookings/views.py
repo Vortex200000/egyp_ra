@@ -1558,7 +1558,7 @@ class CreateBookingView(generics.CreateAPIView):
         
         # Extract tour and date from validated data
         tour_id = serializer.validated_data['tour_id']
-        preferred_date = serializer.validated_data['preferred_date']
+        # preferred_date = serializer.validated_data['preferred_date']
         
         # Check for duplicate booking
         duplicate_booking = self.check_duplicate_booking(
