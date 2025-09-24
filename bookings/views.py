@@ -1557,29 +1557,29 @@ class CreateBookingView(generics.CreateAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         
         # Extract tour and date from validated data
-        # tour_id = serializer.validated_data['tour_id']
+        tour_id = serializer.validated_data['tour_id']
         # preferred_date = serializer.validated_data['preferred_date']
         
         # Check for duplicate booking
-        # duplicate_booking = self.check_duplicate_booking(
-        #     user=request.user,
-        #     tour_id=tour_id,
+        duplicate_booking = self.check_duplicate_booking(
+            user=request.user,
+            tour_id=tour_id,
         
-        #     email=email
-        # )
+            email=email
+        )
         
-        # if duplicate_booking:
-        #     return Response({
-        #         'success': False,
-        #         'message': 'You already have an active booking for this tour on this date',
-        #         'error_code': 'DUPLICATE_BOOKING',
-        #         'existing_booking': {
-        #             'booking_reference': duplicate_booking.booking_reference,
-        #             'booking_status': duplicate_booking.booking_status,
-        #             'created_at': duplicate_booking.created_at,
-        #             'tour_title': duplicate_booking.tour.title
-        #         }
-        #     }, status=status.HTTP_409_CONFLICT)
+        if duplicate_booking:
+            return Response({
+                'success': False,
+                'message': 'You already have an active booking for this tour on this date',
+                'error_code': 'DUPLICATE_BOOKING',
+                'existing_booking': {
+                    'booking_reference': duplicate_booking.booking_reference,
+                    'booking_status': duplicate_booking.booking_status,
+                    'created_at': duplicate_booking.created_at,
+                    'tour_title': duplicate_booking.tour.title
+                }
+            }, status=status.HTTP_409_CONFLICT)
         
         booking = serializer.save(
             user=request.user,
