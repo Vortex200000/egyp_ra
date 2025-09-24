@@ -1564,7 +1564,7 @@ class CreateBookingView(generics.CreateAPIView):
         duplicate_booking = self.check_duplicate_booking(
             user=request.user,
             tour_id=tour_id,
-            preferred_date=preferred_date,
+        
             email=email
         )
         
