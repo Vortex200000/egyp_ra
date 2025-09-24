@@ -1453,20 +1453,56 @@ class CreateBookingView(generics.CreateAPIView):
     serializer_class = CreateBookingSerializer
     permission_classes = [IsAuthenticated]
 
-    def check_duplicate_booking(self, user, tour_id, preferred_date, email=None):
+    # def check_duplicate_booking(self, user, tour_id, preferred_date, email=None):
+    #     """
+    #     Check if the user already has an active booking for the same tour on the same date
+    #     """
+    #     # Define active booking statuses (exclude cancelled and completed)
+    #     active_statuses = ['pending', 'confirmed']
+        
+    #     # For authenticated users, check by user
+    #     if user and user.is_authenticated:
+    #         existing_booking = Booking.objects.filter(
+    #             user=user,
+    #             tour_id=tour_id,
+    #             preferred_date=preferred_date,
+    #             booking_status__in=active_statuses
+    #         ).first()
+            
+    #         if existing_booking:
+    #             return existing_booking
+        
+    #     # For guest users or as additional check, also check by email
+    #     if email:
+    #         existing_booking_by_email = Booking.objects.filter(
+    #             email=email,
+    #             tour_id=tour_id,
+    #             preferred_date=preferred_date,
+    #             booking_status__in=active_statuses
+    #         ).first()
+            
+    #         if existing_booking_by_email:
+    #             return existing_booking_by_email
+        
+    #     return None
+    def check_duplicate_booking(self, user, tour_id, availability_description=None, preferred_date=None, email=None):
         """
-        Check if the user already has an active booking for the same tour on the same date
+        Check if the user already has an active booking for the same tour
+        Now uses availability_description instead of preferred_date for comparison
         """
         # Define active booking statuses (exclude cancelled and completed)
         active_statuses = ['pending', 'confirmed']
+        
+        base_filter = {
+            'tour_id': tour_id,
+            'booking_status__in': active_statuses
+        }
         
         # For authenticated users, check by user
         if user and user.is_authenticated:
             existing_booking = Booking.objects.filter(
                 user=user,
-                tour_id=tour_id,
-                preferred_date=preferred_date,
-                booking_status__in=active_statuses
+                **base_filter
             ).first()
             
             if existing_booking:
@@ -1476,16 +1512,13 @@ class CreateBookingView(generics.CreateAPIView):
         if email:
             existing_booking_by_email = Booking.objects.filter(
                 email=email,
-                tour_id=tour_id,
-                preferred_date=preferred_date,
-                booking_status__in=active_statuses
+                **base_filter
             ).first()
             
             if existing_booking_by_email:
                 return existing_booking_by_email
         
         return None
-
     def validate_email_address(self, email):
         """Validate email format and basic checks"""
         try:
@@ -2208,6 +2241,29 @@ def admin_all_bookings(request):
     
     # Serialize bookings with extra admin info
     booking_data = []
+    # for booking in bookings:
+    #     booking_info = {
+    #         'id': booking.id,
+    #         'booking_reference': booking.booking_reference,
+    #         'customer_name': booking.full_name,
+    #         'customer_email': booking.email,
+    #         'tour_title': booking.tour.title,
+    #         'tour_location': booking.tour.location,
+    #         'preferred_date': booking.preferred_date,
+    #         'preferred_time': booking.preferred_time,
+    #         'number_of_travelers': booking.number_of_travelers,
+    #         'total_amount': booking.total_amount,
+    #         'phone_num': booking.phone,
+    #         'booking_status': booking.booking_status,
+    #         'payment_status': booking.payment_status,
+    #         'created_at': booking.created_at,
+    #         'can_confirm': booking.booking_status == 'pending',
+    #         'can_decline': booking.booking_status in ['pending', 'confirmed'],
+    #         'special_requests': booking.special_requests,
+    #         'user_id': booking.user.id if booking.user else None,
+    #         'username': booking.user.username if booking.user else 'Guest',
+    #     }
+    #     booking_data.append(booking_info)
     for booking in bookings:
         booking_info = {
             'id': booking.id,
@@ -2216,7 +2272,8 @@ def admin_all_bookings(request):
             'customer_email': booking.email,
             'tour_title': booking.tour.title,
             'tour_location': booking.tour.location,
-            'preferred_date': booking.preferred_date,
+            'availability_description': booking.availability_description,  # NEW
+            'preferred_date': booking.preferred_date,  # Keep for legacy bookings
             'preferred_time': booking.preferred_time,
             'number_of_travelers': booking.number_of_travelers,
             'total_amount': booking.total_amount,

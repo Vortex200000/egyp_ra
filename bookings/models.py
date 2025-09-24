@@ -1,5 +1,7 @@
 # bookings/models.py
 
+# bookings/models.py
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
@@ -56,7 +58,16 @@ class Booking(models.Model):
     number_of_travelers = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(50)]
     )
-    preferred_date = models.DateField()
+    # CHANGED: Made preferred_date nullable and optional
+    preferred_date = models.DateField(null=True, blank=True)
+    
+    # NEW: Added availability description field to replace specific date
+    availability_description = models.CharField(
+        max_length=200, 
+        default="Available all week",
+        help_text="Description of tour availability (e.g., 'Available all week', 'Weekends only', etc.)"
+    )
+    
     preferred_time = models.TimeField(null=True, blank=True)
     special_requests = models.TextField(blank=True)
 
@@ -114,7 +125,7 @@ class Booking(models.Model):
             models.Index(fields=['user']),
             models.Index(fields=['booking_status']),
             models.Index(fields=['payment_status']),
-            models.Index(fields=['preferred_date']),
+            # REMOVED: Index on preferred_date since it's now optional
         ]
 
     def __str__(self):
@@ -134,14 +145,18 @@ class Booking(models.Model):
 
     @property
     def can_be_cancelled(self):
-        # Can be cancelled if not completed and tour date is in the future
-        return (
-            self.booking_status in ['pending', 'confirmed'] and 
-            self.preferred_date > timezone.now().date()
-        )
+        # UPDATED: Since preferred_date is now optional, check if it exists
+        if self.preferred_date:
+            return (
+                self.booking_status in ['pending', 'confirmed'] and 
+                self.preferred_date > timezone.now().date()
+            )
+        # If no specific date, allow cancellation for pending/confirmed bookings
+        return self.booking_status in ['pending', 'confirmed']
 
     @property
     def days_until_tour(self):
+        # UPDATED: Return None if no specific date is set
         if self.preferred_date:
             return (self.preferred_date - timezone.now().date()).days
         return None
