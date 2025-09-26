@@ -18,5 +18,5 @@ urlpatterns = [
     
     # Reviews
     path('<slug:tour_slug>/reviews/', views.TourReviewListView.as_view(), name='tour_reviews'),
-    path('<slug:tour_slug>/reviews/create/', views.CreateTourReviewView.as_view(), name='create_tour_review'),
+    path('<slug:tour_id>/reviews/create/', views.CreateTourReviewView.as_view(), name='create_tour_review'),
 ]

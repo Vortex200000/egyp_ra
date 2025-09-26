@@ -143,15 +143,8 @@ class CreateTourReviewView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        tour_slug = kwargs.get('tour_slug')
-        tour = get_object_or_404(Tour, slug=tour_slug)
-        
-        # Check if user already reviewed this tour
-        if TourReview.objects.filter(tour=tour, user=request.user).exists():
-            return Response({
-                'success': False,
-                'message': 'You have already reviewed this tour'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        tour_id = kwargs.get('tour_id')  # Changed from tour_slug
+        tour = get_object_or_404(Tour, id=tour_id)  # Changed from slug=tour_slug
         
         # Add tour to the data
         mutable_data = request.data.copy()
@@ -169,6 +162,14 @@ class CreateTourReviewView(generics.CreateAPIView):
             'message': 'Review created successfully',
             'review': TourReviewSerializer(review).data
         }, status=status.HTTP_201_CREATED)
+
+    def update_tour_rating(self, tour):
+        """Update tour's average rating and review count"""
+        reviews = TourReview.objects.filter(tour=tour, is_active=True)
+        if reviews.exists():
+            tour.rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            tour.review_count = reviews.count()
+            tour.save(update_fields=['rating', 'review_count'])
 
     def update_tour_rating(self, tour):
         """Update tour's average rating and review count"""
