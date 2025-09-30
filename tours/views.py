@@ -22,6 +22,7 @@ class TourListView(generics.ListAPIView):
     List all active tours with filtering and search
     """
     serializer_class = TourListSerializer
+    pagination_class = None 
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'difficulty', 'location', 'is_featured']
